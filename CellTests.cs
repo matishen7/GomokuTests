@@ -1,3 +1,6 @@
+using Gomoku.Models;
+using static Gomoku.Models.Cell;
+
 namespace GomokuTests
 {
     public class CellTests
@@ -8,9 +11,11 @@ namespace GomokuTests
         }
 
         [Test]
-        public void Test1()
+        public void NewCell_StoneColor_Empty()
         {
-            Assert.Pass();
+            var cell = new Cell();
+            Assert.That(cell, Is.Not.Null);
+            Assert.That(cell.Color, Is.EqualTo(StoneColor.Empty));
         }
     }
 }
