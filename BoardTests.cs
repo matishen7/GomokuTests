@@ -63,5 +63,39 @@ namespace GomokuTests
             end = board.IsEndOfGame();
             Assert.That(end, Is.True);
         }
+
+        [Test]
+        public void Board_IsVerticalWin()
+        {
+            var board = new Board();
+            Assert.That(board.GetGridSize, Is.EqualTo(15));
+            Assert.That(board.IsEndOfGame(), Is.EqualTo(false));
+            var player1 = new HumanPlayer("John");
+
+            player1.Move(board, 0, 0);
+            board.CheckForWin(0, 0);
+            var end = board.IsEndOfGame();
+            Assert.That(end, Is.False);
+
+            player1.Move(board, 1, 0);
+            board.CheckForWin(1, 0);
+            end = board.IsEndOfGame();
+            Assert.That(end, Is.False);
+
+            player1.Move(board, 2, 0);
+            board.CheckForWin(2, 0);
+            end = board.IsEndOfGame();
+            Assert.That(end, Is.False);
+
+            player1.Move(board, 3, 0);
+            board.CheckForWin(3, 0);
+            end = board.IsEndOfGame();
+            Assert.That(end, Is.False);
+
+            player1.Move(board, 4, 0);
+            board.CheckForWin(4, 0);
+            end = board.IsEndOfGame();
+            Assert.That(end, Is.True);
+        }
     }
 }
