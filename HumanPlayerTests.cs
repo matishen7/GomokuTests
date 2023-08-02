@@ -10,9 +10,11 @@ namespace GomokuTests
 {
     public class HumanPlayerTests
     {
+        IScreen screen;
         [SetUp]
         public void Setup()
         {
+            screen = new ConsoleScreen();
         }
 
         [Test]
@@ -23,9 +25,9 @@ namespace GomokuTests
                 .Build();
             Assert.That(bd.GetGridSize, Is.EqualTo(10));
 
-            var hp = new HumanPlayer("John");
+            var hp = new HumanPlayer("John", StoneColor.White, screen);
             Assert.That(hp.GetName(), Is.Not.Null);
-            Assert.That(() => hp.Move(null, 0, 0), Throws.ArgumentNullException);
+            Assert.That(() => hp.MakeMove(null), Throws.ArgumentNullException);
         }
 
         [Test]
@@ -36,24 +38,13 @@ namespace GomokuTests
                 .Build();
             Assert.That(bd.GetGridSize, Is.EqualTo(10));
 
-            var cp = new HumanPlayer("John", false);
-            bd = cp.Move(bd, 0, 0);
+            var screenMock = new MockScreen();
+            screenMock.SetUserInput("2", "3"); 
+            var cp = new HumanPlayer("John", StoneColor.White, screenMock);
+            var move = cp.MakeMove(bd);
 
-            Assert.That(bd.Grid[0][0].Color, Is.EqualTo(StoneColor.White));
-        }
-
-        [Test]
-        public void HumanPlayer_IsBlack_When_Move_Success()
-        {
-            var bd = new BoardBuilder()
-                .WithGridSize(10)
-                .Build();
-            Assert.That(bd.GetGridSize, Is.EqualTo(10));
-
-            var cp = new HumanPlayer("John");
-            bd = cp.Move(bd, 0, 0);
-
-            Assert.That(bd.Grid[0][0].Color, Is.EqualTo(StoneColor.Black));
+            Assert.That(move.x, Is.EqualTo(2));
+            Assert.That(move.y, Is.EqualTo(3));
         }
 
         [Test]
@@ -63,12 +54,14 @@ namespace GomokuTests
                 .WithGridSize(10)
                 .Build();
             Assert.That(bd.GetGridSize, Is.EqualTo(10));
-
-            var cp = new HumanPlayer("John");
+            
+            var screenMock = new MockScreen();
+            screenMock.SetUserInput("11", "11");
+            var cp = new HumanPlayer("John", StoneColor.White, screenMock);
 
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                cp.Move(bd, 11, 11);
+                cp.MakeMove(bd);
             });
         }
 
@@ -80,12 +73,30 @@ namespace GomokuTests
                 .Build();
             Assert.That(bd.GetGridSize, Is.EqualTo(10));
 
-            var cp = new HumanPlayer("John");
+            var screenMock = new MockScreen();
+            screenMock.SetUserInput("-1", "-1");
+            var cp = new HumanPlayer("John", StoneColor.White, screenMock);
 
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                cp.Move(bd, -1, -1);
+                cp.MakeMove(bd);
             });
+        }
+
+        [Test]
+        public void HumanPlayer_IsBlack()
+        {
+            var hp = new HumanPlayer("John", StoneColor.Black, screen);
+            var color = hp.GetColor();
+            Assert.That(color, Is.EqualTo(StoneColor.Black));
+        }
+
+        [Test]
+        public void HumanPlayer_IsWhite()
+        {
+            var hp = new HumanPlayer("John", StoneColor.White, screen);
+            var color = hp.GetColor();
+            Assert.That(color, Is.EqualTo(StoneColor.White));
         }
     }
 }

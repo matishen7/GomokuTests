@@ -25,9 +25,9 @@ namespace GomokuTests
                 .Build();
             Assert.That(bd.GetGridSize, Is.EqualTo(10));
 
-            var cp = new ComputerPlayer();
+            var cp = new ComputerPlayer(StoneColor.Black);
             Assert.That(cp.GetName(), Is.Not.Null);
-            Assert.That(() => cp.Move(null, 0, 0), Throws.ArgumentNullException);
+            Assert.That(() => cp.MakeMove(null), Throws.ArgumentNullException);
         }
 
         [Test]
@@ -38,34 +38,28 @@ namespace GomokuTests
                 .Build();
             Assert.That(bd.GetGridSize, Is.EqualTo(10));
 
-            var cp = new ComputerPlayer();
-            bd = cp.Move(bd, 0, 0);
-            int count = 0;
-            for(var i  = 0;i < bd.GetGridSize();i++)
-                for (var j = 0; j < bd.Grid[i].Length;j++)
-                    if (bd.Grid[i][j].Color == StoneColor.White)
-                        count++;
-
-            Assert.That(count, Is.EqualTo(1));
+            var cp = new ComputerPlayer(StoneColor.White);
+            var move = cp.MakeMove(bd);
+            Assert.That(move.x, Is.GreaterThanOrEqualTo(0));
+            Assert.That(move.x, Is.LessThan(10));
+            Assert.That(move.y, Is.GreaterThanOrEqualTo(0));
+            Assert.That(move.y, Is.LessThan(10));
         }
 
         [Test]
-        public void ComputerPlayer_IsBlack_When_Move_Success()
+        public void ComputerPlayer_IsBlack()
         {
-            var bd = new BoardBuilder()
-                .WithGridSize(10)
-                .Build();
-            Assert.That(bd.GetGridSize, Is.EqualTo(10));
+            var cp = new ComputerPlayer(StoneColor.Black);
+            var color = cp.GetColor();
+            Assert.That(color, Is.EqualTo(StoneColor.Black));
+        }
 
-            var cp = new ComputerPlayer(isBlack: true);
-            bd = cp.Move(bd, 0, 0);
-            int count = 0;
-            for (var i = 0; i < bd.GetGridSize(); i++)
-                for (var j = 0; j < bd.Grid[i].Length; j++)
-                    if (bd.Grid[i][j].Color == StoneColor.Black)
-                        count++;
-
-            Assert.That(count, Is.EqualTo(1));
+        [Test]
+        public void ComputerPlayer_IsWhite()
+        {
+            var cp = new ComputerPlayer(StoneColor.White);
+            var color = cp.GetColor();
+            Assert.That(color, Is.EqualTo(StoneColor.White));
         }
     }
 }
