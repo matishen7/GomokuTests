@@ -48,6 +48,29 @@ namespace GomokuTests
         }
 
         [Test]
+        public void HumanPlayer_When_Multiple_Move_Success()
+        {
+            var bd = new BoardBuilder()
+                .WithGridSize(10)
+                .Build();
+            Assert.That(bd.GetGridSize, Is.EqualTo(10));
+
+            var screenMock = new MockScreen();
+            screenMock.SetUserInput("2", "3");
+            var cp = new HumanPlayer("John", StoneColor.White, screenMock);
+            var move = cp.MakeMove(bd);
+
+            Assert.That(move.x, Is.EqualTo(2));
+            Assert.That(move.y, Is.EqualTo(3));
+
+            screenMock.SetUserInput("4", "6");
+            move = cp.MakeMove(bd);
+
+            Assert.That(move.x, Is.EqualTo(4));
+            Assert.That(move.y, Is.EqualTo(6));
+        }
+
+        [Test]
         public void HumanPlayer_When_Coordinates_Greater_Throws_ArgumentOutOfRangeException()
         {
             var bd = new BoardBuilder()
